@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import Screen from '../../components/Screen';
 import Filter from './Filter';
 import Vehicles from './Vehicles';
-import { AddScreen, EditScreen } from '../../navigation/screens';
+import {AddScreen, DetailScreen} from '../../navigation/screens';
 
 
 let enableButtons = false;
@@ -12,10 +12,6 @@ let enableButtons = false;
 class Home extends React.Component {
   constructor(props) {
     super(props);
-    this.state = { vehicles: [] };
-
-    this.handleEdit = this.handleEdit.bind(this);
-    this.setVehicles = this.setVehicles.bind(this);
     this.props.navigator.setOnNavigatorEvent(this.onNavigatorEvent.bind(this));
   }
 
@@ -33,32 +29,20 @@ class Home extends React.Component {
     }
   }
 
-  setVehicles(vehicles) {
-    this.setState({ vehicles });
-  }
-
-  handleEdit(vehicle) {
-    if (enableButtons) {
-      enableButtons = false;
+  onSelect(vehicle) {
+    return () => {
       this.props.navigator.push({
-        ...EditScreen,
-        passProps: { editing: true, vehicle },
+        ...DetailScreen,
+        passProps: { vehicle },
       });
-    }
+    };
   }
 
   render() {
-    const { vehicles } = this.state;
-
     return (
       <Screen>
-        <Filter
-          onResult={this.setVehicles}
-        />
-        <Vehicles
-          vehicles={vehicles}
-          onSelect={this.handleEdit}
-        />
+        <Filter />
+        <Vehicles onSelect={this.onSelect.bind(this)} />
       </Screen>
     );
   }

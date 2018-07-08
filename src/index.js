@@ -1,5 +1,11 @@
+import { Provider } from 'react-redux';
+import store from './Store';
 import registerScreens from './navigation/register';
 import startApp from './navigation/startApp';
 
-registerScreens();
+if (__DEV__) {
+  console.disableYellowBox = true;
+}
+
+registerScreens(store, Provider);
 startApp();

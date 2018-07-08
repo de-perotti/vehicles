@@ -8,16 +8,12 @@ export const AddScreen = {
       {
         title: 'Cancelar',
         id: 'cancel',
-        buttonColor: 'blue',
-        buttonFontWeight: '200',
       },
     ],
     rightButtons: [
       {
         title: 'Salvar',
         id: 'save',
-        buttonColor: 'blue',
-        buttonFontWeight: '200',
       },
     ],
   },
@@ -26,4 +22,23 @@ export const AddScreen = {
 export const EditScreen = {
   ...AddScreen,
   title: 'Editar',
+};
+
+export const DetailScreen = {
+  screen: 'vehicles.Details',
+  title: 'Detalhes',
+  navigatorButtons: {
+    leftButtons: [
+      {
+        title: 'Voltar',
+        id: 'cancel',
+      },
+    ],
+    rightButtons: [
+      {
+        title: 'Editar',
+        id: 'edit',
+      },
+    ],
+  },
 };

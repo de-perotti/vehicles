@@ -1,11 +1,14 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import { Text, View } from 'react-native';
 import Screen from '../../components/Screen';
 
 class Upsert extends React.Component {
   constructor(props) {
     super(props);
-    this.state = {};
+    this.state = {
+      vehicle: {},
+    };
 
     this.onNavigatorEvent = this.onNavigatorEvent.bind(this);
     this.props.navigator.setOnNavigatorEvent(this.onNavigatorEvent);
@@ -16,9 +19,13 @@ class Upsert extends React.Component {
       if (event.id === 'cancel') {
         this.props.navigator.pop();
       } else if (event.id === 'save') {
-        console.log('save');
+        this.handleSave();
       }
     }
+  }
+
+  handleSave() {
+    const { vehicle } = this.state;
   }
 
   render() {
@@ -33,5 +40,15 @@ class Upsert extends React.Component {
     );
   }
 }
+
+Upsert.defaultProps = {
+  editing: false,
+  vehicle: null,
+};
+
+Upsert.propTypes = {
+  editing: PropTypes.bool,
+  vehicle: PropTypes.object,
+};
 
 export default Upsert;
