@@ -28,19 +28,23 @@ class Filter extends React.PureComponent {
   }
 }
 
+
 Filter.propTypes = {
   buscaVeiculo: PropTypes.func.isRequired,
   onChangeText: PropTypes.func.isRequired,
   value: PropTypes.string.isRequired,
 };
 
+
 const mapStateToProps = state => ({
   value: state.filter.value,
 });
+
 
 const mapDispatchToProps = dispatch => ({
   buscaVeiculo: bindActionCreators(buscaVeiculoThunk, dispatch),
   onChangeText: bindActionCreators(updateFilter, dispatch),
 });
+
 
 export default connect(mapStateToProps, mapDispatchToProps)(Filter);

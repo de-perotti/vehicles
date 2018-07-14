@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import { Text, View } from 'react-native';
 import Screen from '../../components/Screen';
 
+
 class Upsert extends React.Component {
   constructor(props) {
     super(props);
@@ -36,15 +37,18 @@ class Upsert extends React.Component {
   }
 }
 
+
 Upsert.defaultProps = {
   editing: false,
   vehicle: null,
 };
+
 
 Upsert.propTypes = {
   editing: PropTypes.bool,
   vehicle: PropTypes.object,
   navigator: PropTypes.object.isRequired,
 };
+
 
 export default Upsert;

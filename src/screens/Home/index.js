@@ -48,8 +48,10 @@ class Home extends React.Component {
   }
 }
 
+
 Home.propTypes = {
   navigator: PropTypes.object.isRequired,
 };
+
 
 export default Home;

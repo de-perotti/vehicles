@@ -5,7 +5,9 @@ import { connect } from 'react-redux';
 import Screen from '../../components/Screen';
 import { EditScreen } from '../../navigation/screens';
 
+
 let enableButtons = false;
+
 
 class Details extends React.Component {
   constructor(props) {
@@ -63,13 +65,16 @@ class Details extends React.Component {
   }
 }
 
+
 Details.propTypes = {
   navigator: PropTypes.object.isRequired,
   vehicle: PropTypes.object.isRequired,
 };
 
+
 const mapStateToProps = state => ({
   vehicle: state.vehicle.selected,
 });
+
 
 export default connect(mapStateToProps)(Details);

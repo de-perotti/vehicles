@@ -2,7 +2,8 @@ import thunkTemplate from '../helpers/thunks';
 import { gqlArgumentParser } from '../helpers/graphql';
 
 
-export const BUSCA_VEICULO = 'buscaVeiculo';
+export const BUSCA_VEICULO_FILTER = 'buscaVeiculoFilter';
+export const BUSCA_VEICULO_NO_FILTER = 'buscaVeiculoNoFilter';
 
 
 const buildBody = ({
@@ -30,10 +31,13 @@ const buildBody = ({
 }`;
 
 
-const options = {
-  name: BUSCA_VEICULO,
-  builder: buildBody,
+export default {
+  noFilter: thunkTemplate({
+    name: BUSCA_VEICULO_NO_FILTER,
+    builder: buildBody,
+  }),
+  filter: thunkTemplate({
+    name: BUSCA_VEICULO_FILTER,
+    builder: buildBody,
+  }),
 };
-
-
-export default thunkTemplate(options);
