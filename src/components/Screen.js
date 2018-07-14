@@ -4,16 +4,15 @@ import { ScrollView, StyleSheet, View } from 'react-native';
 
 const styles = StyleSheet.create({
   root: {
-
+    flex: 1,
   },
-  scrollView: {
-
-  },
+  scrollView: {},
 });
 
 const Screen = ({
   style,
   scrollViewStyle,
+  scrollViewProps,
   children,
   ...props
 }) => (
@@ -29,6 +28,7 @@ const Screen = ({
         style.scrollView,
         scrollViewStyle,
       ]}
+      {...scrollViewProps}
     >
       { children }
     </ScrollView>
@@ -38,6 +38,7 @@ const Screen = ({
 Screen.defaultProps = {
   style: {},
   scrollViewStyle: {},
+  scrollViewProps: {},
 };
 
 Screen.propTypes = {
@@ -47,6 +48,7 @@ Screen.propTypes = {
     PropTypes.arrayOf(PropTypes.node),
     PropTypes.node,
   ]).isRequired,
+  scrollViewProps: PropTypes.object,
 };
 
 export default Screen;

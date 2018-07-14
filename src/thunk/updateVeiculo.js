@@ -14,14 +14,12 @@ const buildBody = ({
   cor,
   usado,
   _id,
-}) => ({
-  body: `
-    mutation {
-      updateVeiculo (
-        data: {
-          ${
+}) => `{
+  updateVeiculo (
+    data: {
+      ${
   gqlArgumentParser(({ combustivel, marca }), '\n', false)}
-          ${
+      ${
   gqlArgumentParser(({
     modelo,
     ano_fabricacao,
@@ -29,12 +27,14 @@ const buildBody = ({
     cor,
     usado,
   }), '\n')}
-        }
-        id: "${_id}"
-      )
     }
-  `,
-});
+    id: "${_id}"
+  )
+}`;
 
+const options = {
+  name: UPDATE_VEICULO,
+  builder: buildBody,
+};
 
-export default thunkTemplate(UPDATE_VEICULO, buildBody);
+export default thunkTemplate(options);

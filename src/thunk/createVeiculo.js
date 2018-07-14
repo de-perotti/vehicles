@@ -13,22 +13,24 @@ const buildBody = ({
   combustivel,
   cor,
   usado,
-}) => ({
-  body: `
-    mutation {
-      createVeiculo (data: {
-        ${gqlArgumentParser(({ combustivel, marca }), '\n', false)}
-        ${gqlArgumentParser(({
+}) => `{
+  createVeiculo (data: {
+    ${gqlArgumentParser(({ combustivel, marca }), '\n', false)}
+    ${gqlArgumentParser(({
     modelo,
     ano_fabricacao,
     ano_modelo,
     cor,
     usado,
   }), '\n')}
-      })
-    }
-  `,
-});
+  })
+}`;
 
 
-export default thunkTemplate(CREATE_VEICULO, buildBody);
+const options = {
+  name: CREATE_VEICULO,
+  builder: buildBody,
+};
+
+
+export default thunkTemplate(options);
