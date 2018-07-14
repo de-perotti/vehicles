@@ -6,9 +6,6 @@ import Screen from '../../components/Screen';
 class Upsert extends React.Component {
   constructor(props) {
     super(props);
-    this.state = {
-      vehicle: {},
-    };
 
     this.onNavigatorEvent = this.onNavigatorEvent.bind(this);
     this.props.navigator.setOnNavigatorEvent(this.onNavigatorEvent);
@@ -24,9 +21,7 @@ class Upsert extends React.Component {
     }
   }
 
-  handleSave() {
-    const { vehicle } = this.state;
-  }
+  handleSave() {}
 
   render() {
     return (
@@ -49,6 +44,7 @@ Upsert.defaultProps = {
 Upsert.propTypes = {
   editing: PropTypes.bool,
   vehicle: PropTypes.object,
+  navigator: PropTypes.object.isRequired,
 };
 
 export default Upsert;

@@ -9,7 +9,9 @@ rules:
   no-underscore-dangle: off
   react/jsx-filename-extension: off
   react/forbid-prop-types: off
+  react/destructuring-assignment: off
   class-methods-use-this: off
+  camelcase: off
 globals:
   __DEV__: false
 env:

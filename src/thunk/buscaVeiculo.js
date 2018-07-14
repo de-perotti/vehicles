@@ -1,31 +1,37 @@
-import { buscaVeiculo } from '../screens/Home/api';
-import { actionCreators } from '../reducers/requests';
+import thunkTemplate from '../helpers/thunks';
+import { gqlArgumentParser } from '../helpers/graphql';
+
 
 export const BUSCA_VEICULO = 'buscaVeiculo';
 
-const {
-  start,
-  finish,
-  fail,
-  success,
-  ongoing,
-} = actionCreators(BUSCA_VEICULO);
 
-export default q => async (dispatch, getState) => {
-  const state = getState();
-  const request = state.requests[BUSCA_VEICULO];
-  if (request && request.started && !request.finished) {
-    dispatch(ongoing);
-    return;
-  }
+const buildBody = ({
+  page, limit, query, type,
+}) => ({
+  body: `
+    query {
+      buscaVeiculo (${
+  gqlArgumentParser({
+    page, limit, query, type,
+  })}){
+        pageInfo {
+          hasPreviousPage
+          hasNextPage
+          pages
+          page
+        }
+        total
+        edges {
+          node {
+            _id
+            marca
+            modelo
+          }
+        }
+      }
+    }
+  `,
+});
 
-  dispatch(start);
 
-  try {
-    dispatch(success(await buscaVeiculo()));
-  } catch (err) {
-    dispatch(fail(err.message));
-  } finally {
-    dispatch(finish);
-  }
-};
+export default thunkTemplate(BUSCA_VEICULO, buildBody);

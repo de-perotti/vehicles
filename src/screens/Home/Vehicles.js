@@ -4,7 +4,7 @@ import {
   FlatList, StyleSheet, Text, TouchableOpacity, View,
 } from 'react-native';
 import { connect } from 'react-redux';
-import { DetailScreen } from '../../navigation/screens';
+
 
 const style = StyleSheet.create({
   root: {
@@ -21,7 +21,14 @@ const style = StyleSheet.create({
   },
 });
 
+
 class Vehicles extends React.PureComponent {
+  componentDidMount() {
+    this.props.buscaVeiculo({
+
+    });
+  }
+
   render() {
     const {
       veiculos, resultado, filtro, onSelect, request,
@@ -29,6 +36,7 @@ class Vehicles extends React.PureComponent {
 
     const requestNotStartedOrOnGoing = !request.started || !request.finished;
     const noResults = filtro.length && !resultado.length;
+
     if (noResults && !requestNotStartedOrOnGoing) {
       return (
         <View>
@@ -66,6 +74,7 @@ Vehicles.propTypes = {
   resultado: PropTypes.arrayOf(PropTypes.object).isRequired,
   onSelect: PropTypes.func.isRequired,
   request: PropTypes.object.isRequired,
+  buscaVeiculo: PropTypes.func.isRequired,
 };
 
 const mapStateToProps = state => ({

@@ -1,5 +1,7 @@
 import React from 'react';
-import { Text } from 'react-native';
+import { Text, View } from 'react-native';
+import PropTypes from 'prop-types';
+import { connect } from 'react-redux';
 import Screen from '../../components/Screen';
 import { EditScreen } from '../../navigation/screens';
 
@@ -13,33 +15,61 @@ class Details extends React.Component {
   }
 
   onNavigatorEvent(event) {
+    const navigator = this.props;
+
     if (event.type === 'ScreenChangedEvent') {
       if (event.id === 'didAppear') {
         enableButtons = true;
       }
-    }
-    if (event.type === 'NavBarButtonPress') {
+    } else if (event.type === 'NavBarButtonPress') {
       if (event.id === 'edit' && enableButtons) {
         enableButtons = false;
-        this.props.navigator.push({
+        navigator.push({
           ...EditScreen,
-          passProps: { edit: true, vehicle: this.props.vehicle },
+          passProps: { edit: true },
         });
       } else if (event.id === 'cancel') {
-        this.props.navigator.pop();
+        navigator.pop();
       }
     }
   }
 
   render() {
+    const { vehicle } = this.props;
+    const keys = Object.keys(vehicle).filter(k => vehicle[k] !== null);
+    const isLoading = !keys.length;
+
     return (
       <Screen>
-        <Text>
-          Details
-        </Text>
+        { isLoading
+          ? (
+            <View>
+              <Text>
+                Carregando
+              </Text>
+            </View>
+          ) : (
+            <View>
+              { keys.map(k => (
+                <Text>
+                  {`${k}: ${vehicle[k]}`}
+                </Text>
+              )) }
+            </View>
+          )
+        }
       </Screen>
     );
   }
 }
 
-export default Details;
+Details.propTypes = {
+  navigator: PropTypes.object.isRequired,
+  vehicle: PropTypes.object.isRequired,
+};
+
+const mapStateToProps = state => ({
+  vehicle: state.vehicle.selected,
+});
+
+export default connect(mapStateToProps)(Details);

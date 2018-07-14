@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import Screen from '../../components/Screen';
 import Filter from './Filter';
 import Vehicles from './Vehicles';
-import {AddScreen, DetailScreen} from '../../navigation/screens';
+import { AddScreen, DetailScreen } from '../../navigation/screens';
 
 
 let enableButtons = false;

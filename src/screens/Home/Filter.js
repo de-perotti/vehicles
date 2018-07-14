@@ -4,13 +4,14 @@ import { TextInput, View } from 'react-native';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import buscaVeiculoThunk from '../../thunk/buscaVeiculo';
-import { updateFilter } from '../../reducers/filter';
+import { updateFilter } from '../../reducers/filter/value';
 
 
 class Filter extends React.PureComponent {
   componentDidUpdate(prevProps) {
-    if (this.props.value.length > prevProps.value.length) {
-      this.props.buscaVeiculo(this.props.value);
+    const { value, buscaVeiculo } = this.props;
+    if (value.length > prevProps.value.length) {
+      buscaVeiculo(value);
     }
   }
 
@@ -30,6 +31,7 @@ class Filter extends React.PureComponent {
 Filter.propTypes = {
   buscaVeiculo: PropTypes.func.isRequired,
   onChangeText: PropTypes.func.isRequired,
+  value: PropTypes.string.isRequired,
 };
 
 const mapStateToProps = state => ({

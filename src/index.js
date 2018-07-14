@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 import { Provider } from 'react-redux';
 import store from './Store';
 import registerScreens from './navigation/register';
