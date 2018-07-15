@@ -1,3 +1,31 @@
+import theme from '../theme';
+
+
+const navigatorStyle = {
+  topBarElevationShadowEnabled: false,
+  navBarNoBorder: true,
+  navBarBackgroundColor: theme.colors.dark,
+};
+
+
+export const Home = {
+  screen: 'vehicles.Home',
+  title: 'Lista',
+  navigatorButtons: {
+    rightButtons: [
+      {
+        title: '+',
+        id: 'add',
+        buttonColor: 'blue',
+        buttonFontSize: 30,
+        buttonFontWeight: '200',
+      },
+    ],
+  },
+  navigatorStyle,
+};
+
+
 export const AddScreen = {
   screen: 'vehicles.Upsert',
   title: 'Adicionar',
@@ -17,7 +45,9 @@ export const AddScreen = {
       },
     ],
   },
+  navigatorStyle,
 };
+
 
 export const EditScreen = {
   ...AddScreen,
@@ -41,4 +71,5 @@ export const DetailScreen = {
       },
     ],
   },
+  navigatorStyle,
 };

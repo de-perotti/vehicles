@@ -15,7 +15,7 @@ export const actionCreators = name => ({
 });
 
 const initialState = {};
-const defaultObject = {
+export const defaultRequestState = {
   started: false,
   finished: false,
   success: null,
@@ -28,7 +28,7 @@ export default function reducer(state = initialState, action) {
       return {
         ...state,
         [action.name]: {
-          ...defaultObject,
+          ...defaultRequestState,
           started: true,
         },
       };

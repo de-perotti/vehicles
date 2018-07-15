@@ -3,12 +3,22 @@ import PropTypes from 'prop-types';
 import { FlatList } from 'react-native';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
-import buscaVeiculo from '../../thunk/buscaVeiculo';
+import { BUSCA_VEICULO_FILTER, noFilter } from '../../thunk/buscaVeiculo';
 import VeiculoListItem from '../../components/VeiculoListItem';
 import FilterError from '../../components/FilterError';
+import { defaultRequestState } from '../../reducers/requests';
 
 
 class Vehicles extends React.PureComponent {
+  constructor() {
+    super();
+    this.state = {
+      shouldRenderError: false,
+    };
+
+    this.timeout = null;
+  }
+
   componentDidMount() {
     this.props.buscaVeiculo({
       page: 1,
@@ -16,22 +26,43 @@ class Vehicles extends React.PureComponent {
     });
   }
 
-  render() {
+  componentDidUpdate() {
+    if (this.timeout) clearTimeout(this.timeout);
+
     const {
-      veiculos, resultado, filtro, onSelect, request,
+      resultado, filtro, request,
     } = this.props;
 
     const requestNotStartedOrOnGoing = !request.started || !request.finished;
-    const noResults = filtro.length && !resultado.length;
+    const noResults = !!filtro.length && !resultado.length;
+    const shouldRenderFalse = noResults && !requestNotStartedOrOnGoing;
 
-    if (noResults && !requestNotStartedOrOnGoing) {
+    if (shouldRenderFalse === this.state.shouldRenderError) return;
+
+    if (shouldRenderFalse) {
+      this.timeout = setTimeout(() => { this.setState({ shouldRenderError: true }); }, 1000);
+    } else {
+      this.setState({ shouldRenderError: false });
+    }
+  }
+
+  render() {
+    const {
+      veiculos, filtro, onSelect,
+    } = this.props;
+
+    if (this.state.shouldRenderError) {
       return <FilterError value={filtro} />;
     }
 
     return (
       <FlatList
         data={veiculos}
-        renderItem={({ item }) => (<VeiculoListItem veiculo={item} onPress={onSelect(item)} />)}
+        keyExtractor={item => item._id}
+        onEndReached={() => { console.log('cheguei no fim'); }}
+        renderItem={({ item }) => (
+          <VeiculoListItem key={item._id} veiculo={item} onPress={onSelect(item)} />
+        )}
       />
     );
   }
@@ -39,12 +70,7 @@ class Vehicles extends React.PureComponent {
 
 
 Vehicles.defaultProps = {
-  request: {
-    started: false,
-    finished: false,
-    success: null,
-    message: '',
-  },
+  request: defaultRequestState,
 };
 
 
@@ -61,13 +87,13 @@ Vehicles.propTypes = {
 const mapStateToProps = state => ({
   filtro: state.filter.value,
   veiculos: state.vehicles.list,
-  resultado: state.result,
-  request: state.requests.buscaVeiculo,
+  resultado: state.filter.result,
+  request: state.requests[BUSCA_VEICULO_FILTER],
 });
 
 
 const mapDispatchToProps = dispatch => ({
-  buscaVeiculo: bindActionCreators(buscaVeiculo, dispatch),
+  buscaVeiculo: bindActionCreators(noFilter, dispatch),
 });
 
 

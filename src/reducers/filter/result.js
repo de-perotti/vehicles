@@ -1,20 +1,15 @@
+import { BUSCA_VEICULO_FILTER } from '../../thunk/buscaVeiculo';
 import { REQUEST_FAIL, REQUEST_SUCCESS } from '../requests';
-import { BUSCA_VEICULO_NO_FILTER } from '../../thunk/buscaVeiculo';
 
 
-const initialState = {
-  hasPreviousPage: null,
-  hasNextPage: null,
-  pages: null,
-  page: 1,
-};
+const initialState = [];
 
 
 export default function reducer(state = initialState, action) {
   switch (action.type) {
     case REQUEST_FAIL:
     case REQUEST_SUCCESS:
-      if (action.name !== BUSCA_VEICULO_NO_FILTER) return state;
+      if (action.name !== BUSCA_VEICULO_FILTER) return state;
       break;
     default:
       break;
@@ -25,7 +20,7 @@ export default function reducer(state = initialState, action) {
       return initialState;
 
     case REQUEST_SUCCESS:
-      return action.data.pageInfo;
+      return action.data.edges.map(n => n.node);
 
     default:
       return state;

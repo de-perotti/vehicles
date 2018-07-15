@@ -17,8 +17,6 @@ class Details extends React.Component {
   }
 
   onNavigatorEvent(event) {
-    const navigator = this.props;
-
     if (event.type === 'ScreenChangedEvent') {
       if (event.id === 'didAppear') {
         enableButtons = true;
@@ -26,12 +24,12 @@ class Details extends React.Component {
     } else if (event.type === 'NavBarButtonPress') {
       if (event.id === 'edit' && enableButtons) {
         enableButtons = false;
-        navigator.push({
+        this.props.navigator.push({
           ...EditScreen,
           passProps: { edit: true },
         });
       } else if (event.id === 'cancel') {
-        navigator.pop();
+        this.props.navigator.pop();
       }
     }
   }
