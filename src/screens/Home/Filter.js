@@ -1,10 +1,11 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
+import {
+  StyleSheet, Text, TextInput, TouchableOpacity, View,
+} from 'react-native';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
-import { filter } from '../../thunk/buscaVeiculo';
 import { updateFilter } from '../../reducers/filter/value';
 import theme from '../../theme';
 
@@ -20,23 +21,11 @@ const f = StyleSheet.create({
     paddingHorizontal: 5,
     borderRadius: 10,
     backgroundColor: '#ddd',
-
-  }
+  },
 });
 
 
 class Filter extends React.PureComponent {
-  componentDidUpdate(prevProps) {
-    const { value, buscaVeiculo } = this.props;
-    if (value.length > prevProps.value.length) {
-      buscaVeiculo({
-        page: 1,
-        limit: 20,
-        query: value,
-      });
-    }
-  }
-
   render() {
     const { onChangeText, value } = this.props;
     return (
@@ -64,7 +53,6 @@ class Filter extends React.PureComponent {
 
 
 Filter.propTypes = {
-  buscaVeiculo: PropTypes.func.isRequired,
   onChangeText: PropTypes.func.isRequired,
   value: PropTypes.string.isRequired,
 };
@@ -76,7 +64,6 @@ const mapStateToProps = state => ({
 
 
 const mapDispatchToProps = dispatch => ({
-  buscaVeiculo: bindActionCreators(filter, dispatch),
   onChangeText: bindActionCreators(updateFilter, dispatch),
 });
 

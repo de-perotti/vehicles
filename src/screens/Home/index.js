@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import Screen from '../../components/Screen';
 import Filter from './Filter';
-import Vehicles from './Vehicles';
+import Vehicles from './Vehicles.graph';
 import { AddScreen, DetailScreen } from '../../navigation/screens';
 
 
@@ -41,7 +41,7 @@ class Home extends React.Component {
   render() {
     return (
       <Screen>
-        <Filter />
+        {/*<Filter />*/}
         <Vehicles onSelect={this.onSelect.bind(this)} />
       </Screen>
     );

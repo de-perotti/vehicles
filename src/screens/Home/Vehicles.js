@@ -1,65 +1,72 @@
 import React from 'react';
-import PropTypes from 'prop-types';
-import { FlatList } from 'react-native';
-import { bindActionCreators } from 'redux';
+import { FlatList, Text, View } from 'react-native';
 import { connect } from 'react-redux';
-import { BUSCA_VEICULO_FILTER, noFilter } from '../../thunk/buscaVeiculo';
 import VeiculoListItem from '../../components/VeiculoListItem';
-import FilterError from '../../components/FilterError';
-import { defaultRequestState } from '../../reducers/requests';
 
 
-class Vehicles extends React.PureComponent {
-  constructor() {
-    super();
-    this.state = {
-      shouldRenderError: false,
-    };
-
-    this.timeout = null;
+class Vehicles extends React.Component {
+  static getDerivedStateFromProps(props) {
+    console.log(props);
   }
 
-  componentDidMount() {
-    this.props.buscaVeiculo({
-      page: 1,
-      limit: 20,
-    });
-  }
-
-  componentDidUpdate() {
-    if (this.timeout) clearTimeout(this.timeout);
-
-    const {
-      resultado, filtro, request,
-    } = this.props;
-
-    const requestNotStartedOrOnGoing = !request.started || !request.finished;
-    const noResults = !!filtro.length && !resultado.length;
-    const shouldRenderFalse = noResults && !requestNotStartedOrOnGoing;
-
-    if (shouldRenderFalse === this.state.shouldRenderError) return;
-
-    if (shouldRenderFalse) {
-      this.timeout = setTimeout(() => { this.setState({ shouldRenderError: true }); }, 1000);
-    } else {
-      this.setState({ shouldRenderError: false });
+  handleEndReached() {
+    const { buscaVeiculo, fetchMore } = this.props.data;
+    const { pagination: { hasNextPage, page } } = buscaVeiculo;
+    if (hasNextPage) {
+      fetchMore({
+        variables: {
+          page: page + 1,
+          limit: 20,
+          query: '',
+        },
+        updateQuery: (prev, { fetchMoreResult }) => {
+          if (!fetchMoreResult) return prev;
+          return {
+            ...fetchMoreResult,
+            buscaVeiculo: {
+              ...fetchMoreResult.buscaVeiculo,
+              veiculos: [
+                ...prev.buscaVeiculo.veiculos,
+                ...fetchMoreResult.buscaVeiculo.veiculos,
+              ],
+            },
+          };
+        },
+      }).then(console.log)
+        .catch(console.log);
     }
   }
 
   render() {
-    const {
-      veiculos, filtro, onSelect,
-    } = this.props;
+    const { onSelect, data } = this.props;
+    const { buscaVeiculo, loading, error } = data;
 
-    if (this.state.shouldRenderError) {
-      return <FilterError value={filtro} />;
+    if (loading) {
+      return (
+        <View>
+          <Text>
+            Carregando...
+          </Text>
+        </View>
+      );
     }
+    if (error) {
+      return (
+        <View>
+          <Text>
+            {error}
+          </Text>
+        </View>
+      );
+    }
+
+    const { veiculos } = buscaVeiculo;
 
     return (
       <FlatList
-        data={veiculos}
+        data={veiculos.map(v => v.veiculo)}
         keyExtractor={item => item._id}
-        onEndReached={() => { console.log('cheguei no fim'); }}
+        onEndReached={this.handleEndReached.bind(this)}
         renderItem={({ item }) => (
           <VeiculoListItem key={item._id} veiculo={item} onPress={onSelect(item)} />
         )}
@@ -69,32 +76,9 @@ class Vehicles extends React.PureComponent {
 }
 
 
-Vehicles.defaultProps = {
-  request: defaultRequestState,
-};
-
-
-Vehicles.propTypes = {
-  filtro: PropTypes.string.isRequired,
-  veiculos: PropTypes.arrayOf(PropTypes.object).isRequired,
-  resultado: PropTypes.arrayOf(PropTypes.object).isRequired,
-  onSelect: PropTypes.func.isRequired,
-  request: PropTypes.object,
-  buscaVeiculo: PropTypes.func.isRequired,
-};
-
-
 const mapStateToProps = state => ({
   filtro: state.filter.value,
-  veiculos: state.vehicles.list,
-  resultado: state.filter.result,
-  request: state.requests[BUSCA_VEICULO_FILTER],
 });
 
 
-const mapDispatchToProps = dispatch => ({
-  buscaVeiculo: bindActionCreators(noFilter, dispatch),
-});
-
-
-export default connect(mapStateToProps, mapDispatchToProps)(Vehicles);
+export default graphql => connect(mapStateToProps)(graphql(Vehicles));

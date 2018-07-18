@@ -1,4 +1,4 @@
-import { BUSCA_VEICULO_FILTER } from '../../thunk/buscaVeiculo';
+// import { BUSCA_VEICULO_FILTER } from '../../thunk/buscaVeiculo';
 import { REQUEST_FAIL, REQUEST_SUCCESS } from '../requests';
 
 
@@ -9,7 +9,7 @@ export default function reducer(state = initialState, action) {
   switch (action.type) {
     case REQUEST_FAIL:
     case REQUEST_SUCCESS:
-      if (action.name !== BUSCA_VEICULO_FILTER) return state;
+      // if (action.name !== BUSCA_VEICULO_FILTER) return state;
       break;
     default:
       break;
