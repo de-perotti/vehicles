@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { Text, View } from 'react-native';
-import Screen from '../../components/Screen';
+import Screen from '../components/Screen';
 
 
 class Upsert extends React.Component {

@@ -1,9 +1,8 @@
 import React from 'react';
 import { Text, View } from 'react-native';
 import PropTypes from 'prop-types';
-import { connect } from 'react-redux';
-import Screen from '../../components/Screen';
-import { EditScreen } from '../../navigation/screens';
+import Screen from '../components/Screen';
+import { EditScreen } from '../navigation/screens';
 
 
 let enableButtons = false;
@@ -37,7 +36,6 @@ class Details extends React.Component {
   render() {
     const { vehicle } = this.props;
     const keys = Object.keys(vehicle).filter(k => vehicle[k] !== null);
-    const isLoading = !keys.length;
 
     return (
       <Screen>
@@ -70,9 +68,4 @@ Details.propTypes = {
 };
 
 
-const mapStateToProps = state => ({
-  vehicle: state.vehicle.selected,
-});
-
-
-export default connect(mapStateToProps)(Details);
+export default Details;

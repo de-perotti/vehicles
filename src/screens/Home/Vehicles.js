@@ -1,14 +1,13 @@
 import React from 'react';
-import { FlatList, Text, View } from 'react-native';
-import { connect } from 'react-redux';
+import { FlatList } from 'react-native';
+import { graphql } from 'react-apollo';
+import query from '../../queries/buscaVeiculo';
 import VeiculoListItem from '../../components/VeiculoListItem';
+import MessageItem from '../../components/MessageItem';
+import FilterError from '../../components/FilterError';
 
 
 class Vehicles extends React.Component {
-  static getDerivedStateFromProps(props) {
-    console.log(props);
-  }
-
   handleEndReached() {
     const { buscaVeiculo, fetchMore } = this.props.data;
     const { pagination: { hasNextPage, page } } = buscaVeiculo;
@@ -33,31 +32,26 @@ class Vehicles extends React.Component {
           };
         },
       }).then(console.log)
-        .catch(console.log);
+        .catch((e) => {
+          console.log(e.graphQLErrors);
+        });
     }
   }
 
   render() {
-    const { onSelect, data } = this.props;
+    const { onSelect, data, filter } = this.props;
     const { buscaVeiculo, loading, error } = data;
 
     if (loading) {
       return (
-        <View>
-          <Text>
-            Carregando...
-          </Text>
-        </View>
+        <MessageItem message="Carregando..." />
       );
     }
+
     if (error) {
-      return (
-        <View>
-          <Text>
-            {error}
-          </Text>
-        </View>
-      );
+      return filter.length
+        ? <FilterError value={filter} />
+        : <MessageItem message="Não foi possível obter a lista de veículos" />;
     }
 
     const { veiculos } = buscaVeiculo;
@@ -76,9 +70,12 @@ class Vehicles extends React.Component {
 }
 
 
-const mapStateToProps = state => ({
-  filtro: state.filter.value,
-});
-
-
-export default graphql => connect(mapStateToProps)(graphql(Vehicles));
+export default graphql(query, {
+  options: props => ({
+    variables: {
+      page: 1,
+      limit: 20,
+      query: props.filter,
+    },
+  }),
+})(Vehicles);

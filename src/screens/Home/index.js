@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import Screen from '../../components/Screen';
 import Filter from './Filter';
-import Vehicles from './Vehicles.graph';
+import Vehicles from './Vehicles';
 import { AddScreen, DetailScreen } from '../../navigation/screens';
 
 
@@ -12,6 +12,10 @@ let enableButtons = false;
 class Home extends React.Component {
   constructor(props) {
     super(props);
+
+    this.state = { filter: '' };
+
+    this.onChangeFilter = this.onChangeFilter.bind(this);
     this.props.navigator.setOnNavigatorEvent(this.onNavigatorEvent.bind(this));
   }
 
@@ -38,11 +42,15 @@ class Home extends React.Component {
     };
   }
 
+  onChangeFilter(filter) {
+    this.setState({ filter });
+  }
+
   render() {
     return (
       <Screen>
-        {/*<Filter />*/}
-        <Vehicles onSelect={this.onSelect.bind(this)} />
+        <Filter value={this.state.filter} onChangeText={this.onChangeFilter} />
+        <Vehicles filter={this.state.filter} onSelect={this.onSelect.bind(this)} />
       </Screen>
     );
   }
