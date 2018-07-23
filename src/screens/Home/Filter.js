@@ -44,7 +44,7 @@ class Filter extends React.PureComponent {
     const XORValue = (prevProps.value.length && !this.props.value.length)
       || (!prevProps.value.length && this.props.value.length);
     if (XORValue) {
-      LayoutAnimation.linear();
+      // LayoutAnimation.linear();
     }
   }
 

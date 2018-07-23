@@ -1,6 +1,7 @@
 import React from 'react';
 import { FlatList } from 'react-native';
 import { graphql } from 'react-apollo';
+import PropTypes from 'prop-types';
 import query from '../../queries/buscaVeiculo';
 import VeiculoListItem from '../../components/VeiculoListItem';
 import MessageItem from '../../components/MessageItem';
@@ -68,6 +69,12 @@ class Vehicles extends React.Component {
     );
   }
 }
+
+Vehicles.propTypes = {
+  data: PropTypes.object.isRequired,
+  filter: PropTypes.string.isRequired,
+  onSelect: PropTypes.func.isRequired,
+};
 
 
 export default graphql(query, {

@@ -5,8 +5,6 @@ import {
 } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 
-const fadeColor = '#ccc';
-
 const v = StyleSheet.create({
   marca: {
     fontSize: 16,
@@ -38,7 +36,7 @@ const VeiculoListItem = ({ veiculo, onPress }) => (
   <TouchableOpacity
     style={[
       v.root,
-      { borderBottomWidth: 1, borderBottomColor: fadeColor },
+      { borderBottomWidth: 1, borderBottomColor: '#ccc' },
     ]}
     onPress={onPress}
   >
@@ -55,7 +53,7 @@ const VeiculoListItem = ({ veiculo, onPress }) => (
     </View>
 
     <View style={v.icon}>
-      <Icon name="chevron-right" size={30} color={fadeColor} style={{ fontWeight: 100 }} />
+      <Icon name="chevron-right" size={30} color="#ccc" style={{ fontWeight: 100 }} />
     </View>
 
   </TouchableOpacity>

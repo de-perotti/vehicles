@@ -1,7 +1,8 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { Text, View } from 'react-native';
 import Screen from '../components/Screen';
+import VehicleForm from '../components/VehicleForm';
+import { fields } from '../queries/veiculo';
 
 
 class Upsert extends React.Component {
@@ -10,6 +11,8 @@ class Upsert extends React.Component {
 
     this.onNavigatorEvent = this.onNavigatorEvent.bind(this);
     this.props.navigator.setOnNavigatorEvent(this.onNavigatorEvent);
+
+    this.fields = fields.map(field => ({ ...field, initialValue: this.props.vehicle[field.name] }));
   }
 
   onNavigatorEvent(event) {
@@ -22,31 +25,26 @@ class Upsert extends React.Component {
     }
   }
 
-  handleSave() {}
+  handleSubmit() {
+    const { values, errors, keys } = this.form.getValues();
+    if (this.props.editing) {
+      this.handleEdit();
+    } else {
+      this.handleSave();
+    }
+  }
 
   render() {
     return (
       <Screen>
-        <View>
-          <Text>
-            Upsert
-          </Text>
-        </View>
+        <VehicleForm ref={(f) => { this.form = f; }} fields={this.fields} />
       </Screen>
     );
   }
 }
 
-
-Upsert.defaultProps = {
-  editing: false,
-  vehicle: null,
-};
-
-
 Upsert.propTypes = {
-  editing: PropTypes.bool,
-  vehicle: PropTypes.object,
+  vehicle: PropTypes.object.isRequired,
   navigator: PropTypes.object.isRequired,
 };
 

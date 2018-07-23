@@ -1,20 +1,29 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { Text, View } from 'react-native';
+import { View } from 'react-native';
 import Field from './Field';
 import validators from '../helpers/validation';
 
-const normalizeFields = fields => fields.reduce(({ values, validation, keys }, field) => ({
+
+const normalizeFields = fields => fields.reduce(({
+  values, validation, labels, keys,
+}, field) => ({
   values: {
     ...values,
-    [field.name]: field.initialValue,
+    [field.name]: field.initialValue === undefined ? '' : field.initialValue,
   },
   validation: {
     ...validation,
     [field.name]: field.validation || validators[field.type],
   },
+  labels: {
+    ...labels,
+    [field.name]: field.label,
+  },
   keys: [...keys, field.name],
-}), { values: {}, validation: {}, keys: [] });
+}), {
+  values: {}, validation: {}, labels: {}, keys: [],
+});
 
 
 class VehicleForm extends React.Component {
@@ -28,25 +37,29 @@ class VehicleForm extends React.Component {
   }
 
   __validate() {
-    const { values, validation, keys } = this.state;
-    return keys.reduce((response, field) => ({
-      ...response,
-      [field]: validation[field](values[field]),
-    }), {});
+    return this.state.keys.reduce(({ values, errors, keys }, field) => {
+      const { error, value } = this.state.validation[field](this.state.values[field]);
+      return {
+        values: { ...values, [field]: value },
+        errors: [...errors, ...(error ? [error] : [])],
+        keys,
+      };
+    }, { values: {}, errors: [], keys: this.state.keys });
   }
 
   handleChange(field, value) {
-    this.setState({
+    this.setState(state => ({
       values: {
-        ...this.state.values,
+        ...state.values,
         [field]: value,
       },
-    });
+    }));
   }
 
   renderFields() {
     return this.state.keys.map(key => (
       <Field
+        label={this.state.labels[key]}
         key={key}
         onChange={this.handleChange.bind(this, key)}
         value={this.state.values[key]}
@@ -63,6 +76,10 @@ class VehicleForm extends React.Component {
     );
   }
 }
+
+VehicleForm.propTypes = {
+  fields: PropTypes.array.isRequired,
+};
 
 
 export default VehicleForm;
