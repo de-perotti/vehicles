@@ -6,9 +6,6 @@ import Vehicles from './Vehicles';
 import { AddScreen, DetailScreen } from '../../navigation/screens';
 
 
-let enableButtons = false;
-
-
 class Home extends React.Component {
   constructor(props) {
     super(props);
@@ -20,14 +17,8 @@ class Home extends React.Component {
   }
 
   onNavigatorEvent(event) {
-    if (event.type === 'ScreenChangedEvent') {
-      if (event.id === 'didAppear') {
-        enableButtons = true;
-      }
-    }
     if (event.type === 'NavBarButtonPress') {
-      if (event.id === 'add' && enableButtons) {
-        enableButtons = false;
+      if (event.id === 'add') {
         this.props.navigator.push(AddScreen);
       }
     }

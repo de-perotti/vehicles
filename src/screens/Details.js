@@ -10,9 +10,6 @@ import Field from '../components/Field';
 import MessageItem from '../components/MessageItem';
 
 
-let enableButtons = false;
-
-
 class Details extends React.Component {
   constructor(props) {
     super(props);
@@ -25,21 +22,20 @@ class Details extends React.Component {
     if (this.props.data.veiculo) this._onEditarShouldAppear(true);
   }
 
-  componentDidUpdate(prevProps) {
-    if (prevProps.data.loading !== this.props.data.loading) {
+  componentDidUpdate(prevProps, prevState) {
+    const changedLoadingStatus = prevProps.data.loading !== this.props.data.loading;
+    const changedErrorStatus = prevProps.data.error !== this.props.data.error;
+    const didRefresh = prevState.refreshing !== this.state.refreshing;
+
+    if (changedErrorStatus || changedLoadingStatus || didRefresh) {
       const should = !this.props.data.loading && !this.props.data.error;
       this._onEditarShouldAppear(should);
     }
   }
 
   onNavigatorEvent(event) {
-    if (event.type === 'ScreenChangedEvent') {
-      if (event.id === 'didAppear') {
-        enableButtons = true;
-      }
-    } else if (event.type === 'NavBarButtonPress') {
-      if (event.id === 'edit' && enableButtons) {
-        enableButtons = false;
+    if (event.type === 'NavBarButtonPress') {
+      if (event.id === 'edit') {
         this.props.navigator.push({
           ...EditScreen,
           passProps: { veiculo: this.props.data.veiculo },
