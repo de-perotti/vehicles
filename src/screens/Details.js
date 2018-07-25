@@ -38,7 +38,7 @@ class Details extends React.Component {
       if (event.id === 'edit') {
         this.props.navigator.push({
           ...EditScreen,
-          passProps: { veiculo: this.props.data.veiculo },
+          passProps: { veiculo: { ...this.props.data.veiculo } },
         });
       } else if (event.id === 'cancel') {
         this.props.navigator.pop();

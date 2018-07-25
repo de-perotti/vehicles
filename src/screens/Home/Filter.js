@@ -19,6 +19,8 @@ const f = StyleSheet.create({
     flex: 1,
     fontSize: 18,
     marginLeft: 5,
+    padding: 0,
+    margin: 0,
   },
   wrapper: {
     flex: 1,
@@ -65,6 +67,7 @@ class Filter extends React.PureComponent {
             style={f.input}
             value={value}
             onChangeText={onChangeText}
+            underlineColorAndroid="transparent"
           />
         </View>
         { !value.length ? null : (

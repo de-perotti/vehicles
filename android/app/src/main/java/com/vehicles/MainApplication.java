@@ -2,7 +2,7 @@ package com.vehicles;
 
 import com.facebook.react.ReactPackage;
 import com.reactnativenavigation.NavigationApplication;
-import com.oblador.vectoricons.VectorIconsPackage
+import com.oblador.vectoricons.VectorIconsPackage;
 
 import java.util.Arrays;
 import java.util.List;

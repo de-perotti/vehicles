@@ -6,10 +6,12 @@ import PropTypes from 'prop-types';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 
 const v = StyleSheet.create({
-  marca: {
+  upper: {
     fontSize: 16,
   },
-  modelo: {
+  lower: {
+    padding: 0,
+    margin: 0,
     fontSize: 12,
   },
   root: {
@@ -62,13 +64,13 @@ class Field extends React.Component {
         <View style={[v.textContainer, { width: '100%' }]}>
 
           <Text
-            style={v.marca}
+            style={v.upper}
           >
             { label }
           </Text>
 
           <Text
-            style={v.modelo}
+            style={v.lower}
           >
             { value || '-' }
           </Text>
@@ -101,7 +103,7 @@ class Field extends React.Component {
 
             <Text
               style={[
-                v.marca,
+                v.upper,
                 focused && { color: 'rgb(0, 122, 255)' },
                 error && { color: 'red' },
               ]}
@@ -113,13 +115,14 @@ class Field extends React.Component {
               placeholder={placeholder}
               ref={(i) => { this.input = i; }}
               style={[
-                v.modelo,
+                v.lower,
                 error && { borderBottomWidth: 1, borderColor: 'red' },
               ]}
               onFocus={this.handleFocus.bind(this, false)}
               onBlur={this.handleBlur.bind(this)}
               value={value ? value.toString() : ''}
               onChangeText={onChange}
+              underlineColorAndroid="transparent"
             />
 
             { !error
