@@ -6,7 +6,7 @@ import validators from '../helpers/validation';
 
 
 const normalizeFields = fields => fields.reduce(({
-  values, validation, labels, keys,
+  values, validation, labels, keys, placeholders,
 }, field) => ({
   values: {
     ...values,
@@ -20,9 +20,13 @@ const normalizeFields = fields => fields.reduce(({
     ...labels,
     [field.name]: field.label,
   },
+  placeholders: {
+    ...placeholders,
+    [field.name]: field.placeholder || '',
+  },
   keys: [...keys, field.name],
 }), {
-  values: {}, validation: {}, labels: {}, keys: [],
+  values: {}, validation: {}, labels: {}, keys: [], placeholders: {},
 });
 
 
@@ -61,6 +65,7 @@ class VehicleForm extends React.Component {
       <Field
         label={this.state.labels[key]}
         key={key}
+        placeholder={this.state.placeholders[key]}
         onChange={this.handleChange.bind(this, key)}
         value={this.state.values[key]}
         validation={this.state.validation[key]}

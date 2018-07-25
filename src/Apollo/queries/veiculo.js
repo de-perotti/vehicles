@@ -1,5 +1,5 @@
 import gql from 'graphql-tag';
-import { firstCapital } from '../helpers/strings';
+import { firstCapital } from '../../helpers/strings';
 
 export const marcaList = [
   'FIAT',
@@ -28,11 +28,21 @@ export const marcaValidation = (value = '') => {
 };
 
 export const fields = [
-  { name: 'marca', label: 'Marca', validation: marcaValidation },
-  { name: 'modelo', label: 'Modelo', type: 'string' },
-  { name: 'ano_fabricacao', label: 'Ano / Fabricação', type: 'int' },
-  { name: 'ano_modelo', label: 'Ano / Modelo', type: 'int' },
-  { name: 'cor', label: 'Cor', type: 'string' },
+  {
+    name: 'marca', label: 'Marca', validation: marcaValidation, placeholder: 'Marca',
+  },
+  {
+    name: 'modelo', label: 'Modelo', type: 'string', placeholder: 'Modelo',
+  },
+  {
+    name: 'ano_fabricacao', label: 'Ano / Fabricação', type: 'int', placeholder: 'YYYY',
+  },
+  {
+    name: 'ano_modelo', label: 'Ano / Modelo', type: 'int', placeholder: 'YYYY',
+  },
+  {
+    name: 'cor', label: 'Cor', type: 'string', placeholder: 'Cor',
+  },
 ];
 
 export default gql`
@@ -43,9 +53,7 @@ export default gql`
       modelo
       ano_fabricacao
       ano_modelo
-      combustivel
       cor
-      usado
     }
   }
 `;

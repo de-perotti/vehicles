@@ -1,12 +1,12 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { Text, View } from 'react-native';
 import { graphql } from 'react-apollo';
+import ErrorItem from '../components/ErrorItem';
 import Screen from '../components/Screen';
 import VehicleForm from '../components/VehicleForm';
-import { fields } from '../queries/veiculo';
-import mutation from '../queries/createVeiculo';
-import query from '../queries/buscaVeiculo';
+import { fields } from '../Apollo/queries/veiculo';
+import mutation from '../Apollo/mutations/createVeiculo';
+import query from '../Apollo/queries/buscaVeiculo';
 
 
 class Insert extends React.Component {
@@ -38,30 +38,37 @@ class Insert extends React.Component {
 
     this.props.mutate({
       variables: { veiculo: values },
-      updateQueries: [{ query }],
+      refetchQueries: [{
+        query,
+        variables: {
+          page: 1,
+          limit: 20,
+          query: '',
+        },
+      }],
     })
-      .then((res) => {
-        console.log(res);
-        this.setState({ error: null });
+      .then(() => {
+        this.setState({ error: null }, () => {
+          this.props.navigator.pop();
+        });
       })
       .catch((e) => {
-        console.log(e, e.graphQLErrors);
-        this.setState({ error: e.graphQLErrors.reduce((msg, err) => msg + err.message, '') });
+        if (__DEV__) console.log(e);
+        this.setState({ error: e.graphQLErrors.reduce((msg, err) => `${msg}\n${err.message}`, '').trim() });
       });
   }
 
   render() {
     return (
-      <Screen>
+      <Screen
+        scrollViewStyle={{ flex: 1 }}
+      >
         { this.state.error ? (
-          <View>
-            <Text>
-              Não foi possível salvar formulário
-            </Text>
-            <Text>
-              {this.state.error.length ? this.state.error : 'Tente novamente mais tarde'}
-            </Text>
-          </View>
+          <ErrorItem
+            color="#f44"
+            header="Não foi possível salvar formulário."
+            body={this.state.error.length ? this.state.error : 'Tente novamente mais tarde.'}
+          />
         ) : null }
         <VehicleForm ref={(f) => { this.form = f; }} fields={this.fields} />
       </Screen>

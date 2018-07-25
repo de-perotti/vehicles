@@ -33,11 +33,11 @@ class Home extends React.Component {
     }
   }
 
-  onSelect(vehicle) {
+  onSelect(veiculo) {
     return () => {
       this.props.navigator.push({
         ...DetailScreen,
-        passProps: { vehicle },
+        passProps: { veiculo },
       });
     };
   }
@@ -48,9 +48,15 @@ class Home extends React.Component {
 
   render() {
     return (
-      <Screen>
-        <Filter value={this.state.filter} onChangeText={this.onChangeFilter} />
-        <Vehicles filter={this.state.filter} onSelect={this.onSelect.bind(this)} />
+      <Screen noScroll>
+        <Filter
+          value={this.state.filter}
+          onChangeText={this.onChangeFilter}
+        />
+        <Vehicles
+          filter={this.state.filter}
+          onSelect={this.onSelect.bind(this)}
+        />
       </Screen>
     );
   }

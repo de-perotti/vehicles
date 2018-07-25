@@ -32,9 +32,9 @@ const v = StyleSheet.create({
 });
 
 
-const MessageItem = ({ message }) => (
+const MessageItem = ({ message, style }) => (
   <View
-    style={[v.root]}
+    style={[v.root, style]}
   >
     <View style={v.textContainer}>
       <Text style={v.marca}>
@@ -44,9 +44,13 @@ const MessageItem = ({ message }) => (
   </View>
 );
 
+MessageItem.defaultProps = {
+  style: null,
+};
 
 MessageItem.propTypes = {
   message: PropTypes.string.isRequired,
+  style: PropTypes.object,
 };
 
 

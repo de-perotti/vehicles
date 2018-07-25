@@ -53,10 +53,44 @@ class Field extends React.Component {
     this.setState({ focused: false, error });
   }
 
+  renderDisabled() {
+    const { label, value } = this.props;
+
+    return (
+      <View style={[v.root, { borderBottomWidth: 1, borderBottomColor: '#ccc' }]}>
+
+        <View style={[v.textContainer, { width: '100%' }]}>
+
+          <Text
+            style={v.marca}
+          >
+            { label }
+          </Text>
+
+          <Text
+            style={v.modelo}
+          >
+            { value || '-' }
+          </Text>
+
+        </View>
+
+      </View>
+    );
+  }
+
   render() {
+    const {
+      label, onChange, validation, placeholder, disabled,
+    } = this.props;
+
+    if (disabled) {
+      return this.renderDisabled();
+    }
+
     const { focused, error } = this.state;
-    const { label, onChange, validation } = this.props;
     const { value } = validation(this.props.value);
+
     return (
       <TouchableWithoutFeedback
         onPress={this.handleFocus.bind(this, true)}
@@ -68,6 +102,7 @@ class Field extends React.Component {
             <Text
               style={[
                 v.marca,
+                focused && { color: 'rgb(0, 122, 255)' },
                 error && { color: 'red' },
               ]}
             >
@@ -75,6 +110,7 @@ class Field extends React.Component {
             </Text>
 
             <TextInput
+              placeholder={placeholder}
               ref={(i) => { this.input = i; }}
               style={[
                 v.modelo,
@@ -82,7 +118,7 @@ class Field extends React.Component {
               ]}
               onFocus={this.handleFocus.bind(this, false)}
               onBlur={this.handleBlur.bind(this)}
-              value={value}
+              value={value ? value.toString() : ''}
               onChangeText={onChange}
             />
 
@@ -114,13 +150,18 @@ class Field extends React.Component {
 
 Field.defaultProps = {
   validation: () => {},
+  disabled: false,
+  onChange: () => {},
+  placeholder: '',
 };
 
 Field.propTypes = {
+  disabled: PropTypes.bool,
   value: PropTypes.any.isRequired,
   validation: PropTypes.func,
   label: PropTypes.string.isRequired,
-  onChange: PropTypes.func.isRequired,
+  onChange: PropTypes.func,
+  placeholder: PropTypes.string,
 };
 
 export default Field;

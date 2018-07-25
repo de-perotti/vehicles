@@ -4,12 +4,12 @@ import {
   StyleSheet, Text, TextInput, TouchableOpacity, View, LayoutAnimation,
 } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
-import theme from '../../theme';
 
 
 const f = StyleSheet.create({
   root: {
-    backgroundColor: theme.colors.dark,
+    height: 60,
+    backgroundColor: '#f6f8fa',
     paddingHorizontal: 15,
     paddingVertical: 10,
     flexDirection: 'row',
@@ -17,43 +17,49 @@ const f = StyleSheet.create({
   },
   input: {
     flex: 1,
+    fontSize: 18,
+    marginLeft: 5,
   },
   wrapper: {
     flex: 1,
     flexDirection: 'row',
     justifyContent: 'flex-start',
     alignItems: 'center',
-    paddingVertical: 3,
+    paddingVertical: 8,
     paddingHorizontal: 5,
     borderRadius: 10,
     backgroundColor: '#ddd',
   },
   cancelText: {
-    color: 'blue',
+    color: 'rgb(0, 122, 255)',
     fontSize: 18,
     fontWeight: '100',
   },
   cancelWrapper: {
-    marginLeft: 5,
+    marginLeft: 10,
   },
 });
 
 
 class Filter extends React.PureComponent {
+  componentWillMount() {
+    LayoutAnimation.easeInEaseOut();
+  }
+
   componentDidUpdate(prevProps) {
     const XORValue = (prevProps.value.length && !this.props.value.length)
       || (!prevProps.value.length && this.props.value.length);
     if (XORValue) {
-      // LayoutAnimation.linear();
+      LayoutAnimation.spring();
     }
   }
 
   render() {
     const { onChangeText, value } = this.props;
     return (
-      <View style={f.root}>
+      <View style={f.root} onLayout={this.props.onLayout}>
         <View style={f.wrapper}>
-          <Icon name="magnify" size={20} color="#b2b2b2" />
+          <Icon name="magnify" size={22} color="#a2a2a2" />
           <TextInput
             placeholder="Search"
             style={f.input}
