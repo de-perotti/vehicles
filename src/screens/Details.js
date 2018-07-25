@@ -1,5 +1,5 @@
 import React from 'react';
-import {  RefreshControl } from 'react-native';
+import { RefreshControl } from 'react-native';
 import PropTypes from 'prop-types';
 import { graphql } from 'react-apollo';
 import Screen from '../components/Screen';

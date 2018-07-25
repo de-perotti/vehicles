@@ -57,7 +57,7 @@ class Filter extends React.PureComponent {
   render() {
     const { onChangeText, value } = this.props;
     return (
-      <View style={f.root} onLayout={this.props.onLayout}>
+      <View style={f.root}>
         <View style={f.wrapper}>
           <Icon name="magnify" size={22} color="#a2a2a2" />
           <TextInput
@@ -83,6 +83,7 @@ class Filter extends React.PureComponent {
 Filter.propTypes = {
   onChangeText: PropTypes.func.isRequired,
   value: PropTypes.string.isRequired,
+
 };
 
 

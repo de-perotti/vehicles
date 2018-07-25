@@ -6,12 +6,4 @@ describe('Loading', () => {
   it('should load home page', async () => {
     await expect(element(by.text('Lista'))).toBeVisible();
   });
-
-  it('should load home page', async () => {
-    await expect(element(by.text('piru'))).toBeVisible();
-  });
-
-  it('should load home page', async () => {
-    await expect(element(by.text('assado'))).toBeVisible();
-  });
 });

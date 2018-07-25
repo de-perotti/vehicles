@@ -88,7 +88,7 @@ class Vehicles extends React.Component {
         >
           { filter.length
             ? <FilterError value={filter} />
-            : <MessageItem message={`Não foi possível obter a lista de veículos.\nArraste para tentar novamente.`} />
+            : <MessageItem message={'Não foi possível obter a lista de veículos.\nArraste para tentar novamente.'} />
           }
         </ScrollView>
       );
