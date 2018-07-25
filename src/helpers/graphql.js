@@ -1,7 +1,9 @@
-export const maybeSurroundInQuotes = (value, should) => (
-  should && typeof value === 'string' ? `"${value}"` : value);
+import React from 'react';
+import { ApolloProvider, graphql } from 'react-apollo';
+import client from '../Apollo/index';
 
-export const gqlArgumentParser = (options, separator = ', ', maybeSurround = true) => Object.keys(options)
-  .filter(option => options[option] !== undefined)
-  .map(option => `${option}: ${maybeSurroundInQuotes(options[option], maybeSurround)}`)
-  .join(separator);
+export const withGraphQL = Component => props => (
+  <ApolloProvider client={client}>
+    <Component {...props} />
+  </ApolloProvider>
+);

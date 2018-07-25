@@ -1,18 +1,19 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { Text, View } from 'react-native';
+import ErrorItem from './ErrorItem';
 
 
 const FilterError = ({ value }) => (
-  <View>
-    <Text>
-      {`Sua busca por ${value} não gerou resultados.`}
-    </Text>
-    <Text>
-      Verifique se digitou corretamente ou tente palavras diferentes
-    </Text>
-  </View>
+  <ErrorItem
+    header={`Sua busca por ${value} não gerou resultados.`}
+    body="Verifique se digitou corretamente, tente palavras diferentes ou arraste para tentar novamente"
+  />
 );
+
+
+FilterError.propTypes = {
+  value: PropTypes.string.isRequired,
+};
 
 
 export default FilterError;

@@ -1,48 +1,65 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
-import { connect } from 'react-redux';
-import { bindActionCreators } from 'redux';
+import {
+  StyleSheet, Text, TextInput, TouchableOpacity, View, LayoutAnimation,
+} from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
-import { filter } from '../../thunk/buscaVeiculo';
-import { updateFilter } from '../../reducers/filter/value';
-import theme from '../../theme';
+
 
 const f = StyleSheet.create({
   root: {
-    backgroundColor: theme.colors.dark,
+    height: 60,
+    backgroundColor: '#f6f8fa',
     paddingHorizontal: 15,
     paddingVertical: 10,
+    flexDirection: 'row',
+    alignItems: 'center',
   },
-  input: {},
+  input: {
+    flex: 1,
+    fontSize: 18,
+    marginLeft: 5,
+  },
   wrapper: {
-    paddingVertical: 3,
+    flex: 1,
+    flexDirection: 'row',
+    justifyContent: 'flex-start',
+    alignItems: 'center',
+    paddingVertical: 8,
     paddingHorizontal: 5,
     borderRadius: 10,
     backgroundColor: '#ddd',
-
-  }
+  },
+  cancelText: {
+    color: 'rgb(0, 122, 255)',
+    fontSize: 18,
+    fontWeight: '100',
+  },
+  cancelWrapper: {
+    marginLeft: 10,
+  },
 });
 
 
 class Filter extends React.PureComponent {
+  componentWillMount() {
+    LayoutAnimation.easeInEaseOut();
+  }
+
   componentDidUpdate(prevProps) {
-    const { value, buscaVeiculo } = this.props;
-    if (value.length > prevProps.value.length) {
-      buscaVeiculo({
-        page: 1,
-        limit: 20,
-        query: value,
-      });
+    const XORValue = (prevProps.value.length && !this.props.value.length)
+      || (!prevProps.value.length && this.props.value.length);
+    if (XORValue) {
+      LayoutAnimation.spring();
     }
   }
 
   render() {
     const { onChangeText, value } = this.props;
     return (
-      <View style={f.root}>
+      <View style={f.root} onLayout={this.props.onLayout}>
         <View style={f.wrapper}>
-          <Icon name="search" />
+          <Icon name="magnify" size={22} color="#a2a2a2" />
           <TextInput
             placeholder="Search"
             style={f.input}
@@ -51,8 +68,8 @@ class Filter extends React.PureComponent {
           />
         </View>
         { !value.length ? null : (
-          <TouchableOpacity onPress={() => onChangeText('')}>
-            <Text>
+          <TouchableOpacity style={f.cancelWrapper} onPress={() => onChangeText('')}>
+            <Text style={f.cancelText}>
               Cancel
             </Text>
           </TouchableOpacity>
@@ -64,21 +81,9 @@ class Filter extends React.PureComponent {
 
 
 Filter.propTypes = {
-  buscaVeiculo: PropTypes.func.isRequired,
   onChangeText: PropTypes.func.isRequired,
   value: PropTypes.string.isRequired,
 };
 
 
-const mapStateToProps = state => ({
-  value: state.filter.value,
-});
-
-
-const mapDispatchToProps = dispatch => ({
-  buscaVeiculo: bindActionCreators(filter, dispatch),
-  onChangeText: bindActionCreators(updateFilter, dispatch),
-});
-
-
-export default connect(mapStateToProps, mapDispatchToProps)(Filter);
+export default Filter;

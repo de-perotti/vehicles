@@ -1,65 +1,113 @@
 import React from 'react';
+import {
+  Dimensions, FlatList, Platform, RefreshControl, ScrollView,
+} from 'react-native';
+import { graphql } from 'react-apollo';
 import PropTypes from 'prop-types';
-import { FlatList } from 'react-native';
-import { bindActionCreators } from 'redux';
-import { connect } from 'react-redux';
-import { BUSCA_VEICULO_FILTER, noFilter } from '../../thunk/buscaVeiculo';
+import query from '../../Apollo/queries/buscaVeiculo';
 import VeiculoListItem from '../../components/VeiculoListItem';
+import MessageItem from '../../components/MessageItem';
 import FilterError from '../../components/FilterError';
-import { defaultRequestState } from '../../reducers/requests';
 
 
-class Vehicles extends React.PureComponent {
-  constructor() {
-    super();
-    this.state = {
-      shouldRenderError: false,
-    };
+const { height } = Dimensions.get('window');
+const maxHeight = height - (105 + (Platform.OS === 'ios' ? 20 : 0));
 
-    this.timeout = null;
+class Vehicles extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = { refreshing: false };
   }
 
-  componentDidMount() {
-    this.props.buscaVeiculo({
+  handleEndReached() {
+    const { buscaVeiculo, fetchMore } = this.props.data;
+    const { pagination: { hasNextPage, page } } = buscaVeiculo;
+    if (hasNextPage) {
+      fetchMore({
+        variables: {
+          page: page + 1,
+          limit: 20,
+          query: '',
+        },
+        updateQuery: (prev, { fetchMoreResult }) => {
+          if (!fetchMoreResult) return prev;
+          return {
+            ...fetchMoreResult,
+            buscaVeiculo: {
+              ...fetchMoreResult.buscaVeiculo,
+              veiculos: [
+                ...prev.buscaVeiculo.veiculos,
+                ...fetchMoreResult.buscaVeiculo.veiculos,
+              ],
+            },
+          };
+        },
+      })
+        .catch((e) => {
+          if (__DEV__) console.log(e.graphQLErrors);
+        });
+    }
+  }
+
+  _onRefresh() {
+    const { refetch } = this.props.data;
+    this.setState({ refreshing: true });
+    refetch({
       page: 1,
       limit: 20,
-    });
-  }
-
-  componentDidUpdate() {
-    if (this.timeout) clearTimeout(this.timeout);
-
-    const {
-      resultado, filtro, request,
-    } = this.props;
-
-    const requestNotStartedOrOnGoing = !request.started || !request.finished;
-    const noResults = !!filtro.length && !resultado.length;
-    const shouldRenderFalse = noResults && !requestNotStartedOrOnGoing;
-
-    if (shouldRenderFalse === this.state.shouldRenderError) return;
-
-    if (shouldRenderFalse) {
-      this.timeout = setTimeout(() => { this.setState({ shouldRenderError: true }); }, 1000);
-    } else {
-      this.setState({ shouldRenderError: false });
-    }
+      query: this.props.filter,
+    })
+      .catch((e) => {
+        if (__DEV__) console.log(e);
+      })
+      .then(() => {
+        this.setState({ refreshing: false });
+      });
   }
 
   render() {
-    const {
-      veiculos, filtro, onSelect,
-    } = this.props;
+    const { onSelect, data, filter } = this.props;
+    const { buscaVeiculo, loading, error } = data;
 
-    if (this.state.shouldRenderError) {
-      return <FilterError value={filtro} />;
+    if (loading) {
+      return (
+        <MessageItem message="Carregando..." />
+      );
     }
+
+    if (error) {
+      return (
+        <ScrollView
+          style={{ height: maxHeight, maxHeight }}
+          refreshControl={(
+            <RefreshControl
+              refreshing={this.state.refreshing}
+              onRefresh={this._onRefresh.bind(this)}
+            />
+          )}
+        >
+          { filter.length
+            ? <FilterError value={filter} />
+            : <MessageItem message={`Não foi possível obter a lista de veículos.\nArraste para tentar novamente.`} />
+          }
+        </ScrollView>
+      );
+    }
+
+    const { veiculos } = buscaVeiculo;
 
     return (
       <FlatList
-        data={veiculos}
+        refreshControl={(
+          <RefreshControl
+            refreshing={this.state.refreshing}
+            onRefresh={this._onRefresh.bind(this)}
+          />
+        )}
+        style={{ maxHeight }}
+        data={veiculos.map(v => v.veiculo)}
         keyExtractor={item => item._id}
-        onEndReached={() => { console.log('cheguei no fim'); }}
+        onEndReached={this.handleEndReached.bind(this)}
         renderItem={({ item }) => (
           <VeiculoListItem key={item._id} veiculo={item} onPress={onSelect(item)} />
         )}
@@ -68,33 +116,19 @@ class Vehicles extends React.PureComponent {
   }
 }
 
-
-Vehicles.defaultProps = {
-  request: defaultRequestState,
-};
-
-
 Vehicles.propTypes = {
-  filtro: PropTypes.string.isRequired,
-  veiculos: PropTypes.arrayOf(PropTypes.object).isRequired,
-  resultado: PropTypes.arrayOf(PropTypes.object).isRequired,
+  data: PropTypes.object.isRequired,
+  filter: PropTypes.string.isRequired,
   onSelect: PropTypes.func.isRequired,
-  request: PropTypes.object,
-  buscaVeiculo: PropTypes.func.isRequired,
 };
 
 
-const mapStateToProps = state => ({
-  filtro: state.filter.value,
-  veiculos: state.vehicles.list,
-  resultado: state.filter.result,
-  request: state.requests[BUSCA_VEICULO_FILTER],
-});
-
-
-const mapDispatchToProps = dispatch => ({
-  buscaVeiculo: bindActionCreators(noFilter, dispatch),
-});
-
-
-export default connect(mapStateToProps, mapDispatchToProps)(Vehicles);
+export default graphql(query, {
+  options: props => ({
+    variables: {
+      page: 1,
+      limit: 20,
+      query: props.filter,
+    },
+  }),
+})(Vehicles);

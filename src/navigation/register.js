@@ -1,10 +1,14 @@
 import { Navigation } from 'react-native-navigation';
 import Home from '../screens/Home/index';
-import Details from '../screens/Details/index';
-import Upsert from '../screens/Upsert/index';
+import Details from '../screens/Details';
+import Insert from '../screens/Insert';
+import Update from '../screens/Update';
+import { withGraphQL } from '../helpers/graphql';
 
-export default (store, Provider) => {
-  Navigation.registerComponent('vehicles.Home', () => Home, store, Provider);
-  Navigation.registerComponent('vehicles.Details', () => Details, store, Provider);
-  Navigation.registerComponent('vehicles.Upsert', () => Upsert, store, Provider);
+
+export default () => {
+  Navigation.registerComponent('vehicles.Home', () => withGraphQL(Home));
+  Navigation.registerComponent('vehicles.Details', () => withGraphQL(Details));
+  Navigation.registerComponent('vehicles.Insert', () => withGraphQL(Insert));
+  Navigation.registerComponent('vehicles.Update', () => withGraphQL(Update));
 };

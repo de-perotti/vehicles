@@ -6,7 +6,9 @@ const styles = StyleSheet.create({
   root: {
     flex: 1,
   },
-  scrollView: {},
+  scrollView: {
+    flex: 1,
+  },
 });
 
 const Screen = ({
@@ -14,6 +16,7 @@ const Screen = ({
   scrollViewStyle,
   scrollViewProps,
   children,
+  noScroll,
   ...props
 }) => (
   <View
@@ -23,15 +26,27 @@ const Screen = ({
     ]}
     {...props}
   >
-    <ScrollView
-      style={[
-        style.scrollView,
-        scrollViewStyle,
-      ]}
-      {...scrollViewProps}
-    >
-      { children }
-    </ScrollView>
+    { noScroll ? (
+      <View
+        style={[
+          style.scrollView,
+          scrollViewStyle,
+        ]}
+        {...scrollViewProps}
+      >
+        { children }
+      </View>
+    ) : (
+      <ScrollView
+        style={[
+          style.scrollView,
+          scrollViewStyle,
+        ]}
+        {...scrollViewProps}
+      >
+        { children }
+      </ScrollView>
+    )}
   </View>
 );
 
@@ -39,9 +54,11 @@ Screen.defaultProps = {
   style: {},
   scrollViewStyle: {},
   scrollViewProps: {},
+  noScroll: false,
 };
 
 Screen.propTypes = {
+  noScroll: PropTypes.bool,
   style: PropTypes.object,
   scrollViewStyle: PropTypes.object,
   children: PropTypes.oneOfType([

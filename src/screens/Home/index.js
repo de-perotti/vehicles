@@ -12,6 +12,10 @@ let enableButtons = false;
 class Home extends React.Component {
   constructor(props) {
     super(props);
+
+    this.state = { filter: '' };
+
+    this.onChangeFilter = this.onChangeFilter.bind(this);
     this.props.navigator.setOnNavigatorEvent(this.onNavigatorEvent.bind(this));
   }
 
@@ -29,20 +33,30 @@ class Home extends React.Component {
     }
   }
 
-  onSelect(vehicle) {
+  onSelect(veiculo) {
     return () => {
       this.props.navigator.push({
         ...DetailScreen,
-        passProps: { vehicle },
+        passProps: { veiculo },
       });
     };
   }
 
+  onChangeFilter(filter) {
+    this.setState({ filter });
+  }
+
   render() {
     return (
-      <Screen>
-        <Filter />
-        <Vehicles onSelect={this.onSelect.bind(this)} />
+      <Screen noScroll>
+        <Filter
+          value={this.state.filter}
+          onChangeText={this.onChangeFilter}
+        />
+        <Vehicles
+          filter={this.state.filter}
+          onSelect={this.onSelect.bind(this)}
+        />
       </Screen>
     );
   }
